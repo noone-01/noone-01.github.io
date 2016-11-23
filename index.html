@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--<script src='caman.full.js' ></script>-->
+        <script src='ImageThingy.js'></script>
+        <!--<script src='sjcl.js'></script>-->
+        <!--<script src='stringview.js'></script>-->
+        <script src='seedrandom.js'></script>
+        <!--<script src="canny.js"></script>-->
+    </head>
+    <body>
+        <!--<img data-caman="brightness(10) contrast(30) sepia(60) saturation(-30)" src="5718.jpeg"/>-->
+        <form>
+            <label for="original-image_src">Image:</label>
+            <input id="original-image_src" type="file" accept="image/*" onchange="loadImage(this.files[0])">
+        </form>
+        <br>
+        <img id="original-image" src="thescream.jpg" onload="reset()"/>
+
+        <button id="reset" type="button" onclick="reset()">Reset</button>
+        <button id="test" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), test)">Test</button>
+        <!--<button id="test" type="button" onclick="test()">Test</button>-->
+        <button id="invert" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), invert)">Invert</button>
+        <button id="grayScale" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), grayScale)">GrayScale</button>
+        <button id="reverse" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), reverse)">Reverse</button>
+        <button id="shuffle" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), shuffle)">Shuffle</button>
+        <button id="shuffle_stable" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), shuffle_stable)">Shuffle Stable</button>
+        <button id="sort" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), sort)">Sort</button>
+        <button id="zeroAlpha" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), zeroAlpha)">Zero Alpha</button>
+        <button id="fullAlpha" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), fullAlpha)">Full Alpha</button>
+        <button id="encrypt" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), encrypt)">Encrypt</button>
+        <button id="showDiffs" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), showDiffs)">Calc Difference</button>
+
+        <form>
+            <input id="brushRect" name="brush" type="radio" checked>
+            <label for="brushRect">Rectangle</label>
+            <input id="brushCircle" name="brush" type="radio" >
+            <label for="brushCircle">Circle</label>
+        </form>
+
+        <form>
+            <!--<input id="effectReset" name="effect" type="radio">Reset</input>-->
+            <input id="effectTest" name="effect" type="radio">
+            <label for="effectTest">Test</label>
+
+            <input id="effectInvert" name="effect" type="radio">
+            <label for="effectInvert">Invert</label>
+
+            <input id="effectGrayScale" name="effect" type="radio">
+            <label for="effectGrayScale">GrayScale</label>
+
+            <input id="effectReverse" name="effect" type="radio">
+            <label for="effectReverse">Reverse</label>
+
+            <input id="effectShuffle" name="effect" type="radio">
+            <label for="effectShuffle">Shuffle</label>
+
+            <input id="effectShuffle_stable" name="effect" type="radio" checked>
+            <label for="effectShuffle_stable">Shuffle Stable</label>
+
+            <input id="effectSort" name="effect" type="radio">
+            <label for="effectSort">Sort</label>
+
+            <input id="effectZeroAlpha" name="effect" type="radio">
+            <label for="effectZeroAlpha">Zero Alpha</label>
+
+            <input id="effectFullAlpha" name="effect" type="radio">
+            <label for="effectFullAlpha">Full Alpha</label>
+
+            <input id="effectEncrypt" name="effect" type="radio">
+            <label for="effectEncrypt">Encrypt</label>
+
+            <input id="effectShowDiffs" name="effect" type="radio">
+            <label for="effectShowDiffs">Calc Difference</label>
+
+            <br>
+            <label for="key">Key:</label>
+            <input id="key" type="text"/>
+            <br>
+        </form>
+        <br>
+        <div style="position: relative;">
+            <canvas id="myCanvas" style="position: relative; left: 0; top: 0; z-index: 0;"></canvas>
+            <canvas id="overlay" style="position: absolute; left: 0; top: 0; z-index: 1; pointer-events:none;"></canvas>
+        </div>
+        <br>
+        <table border="1">
+            <tr>
+                <th>Previous Selection</th>
+                <th>Current Selection</th>
+                <th>Selection Guess</th>
+                <th>Mouse Coords</th>
+            </tr>
+            <tr>
+                <td id="p1Prev">&nbsp;</td>
+                <td id="p1">&nbsp;</td>
+                <td id="p1Guess">&nbsp;</td>
+                <td id="mouseCoords">&nbsp;</td>
+            </tr>
+            <tr>
+                <td id="p2Prev">&nbsp;</td>
+                <td id="p2">&nbsp;</td>
+                <td id="p2Guess">&nbsp;</td>
+            </tr>
+        </table>
+    </body>
+</html>
