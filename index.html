@@ -15,20 +15,24 @@
             <input id="original-image_src" type="file" accept="image/*" onchange="loadImage(this.files[0])">
         </form>
         <br>
-        <img id="original-image" src="thescream.jpg" onload="reset()"/>
+        <img id="original-image" style="display: none" src="Lenna.png" onload="reset()"/>
 
         <button id="reset" type="button" onclick="reset()">Reset</button>
         <button id="test" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), test)">Test</button>
-        <!--<button id="test" type="button" onclick="test()">Test</button>-->
         <button id="invert" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), invert)">Invert</button>
         <button id="grayScale" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), grayScale)">GrayScale</button>
         <button id="reverse" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), reverse)">Reverse</button>
         <button id="shuffle" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), shuffle)">Shuffle</button>
         <button id="shuffle_stable" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), shuffle_stable)">Shuffle Stable</button>
+        <button id="shuffle_blocks" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), shuffle_blocks)">Shuffle Blocks</button>
+        <button id="inner_shuffle_blocks" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), inner_shuffle_blocks)">Inner Shuffle Blocks</button>
         <button id="sort" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), sort)">Sort</button>
+        <button id="extract" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), extract)">Extract</button>
+        <button id="intract" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), intract)">Intract</button>
         <button id="zeroAlpha" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), zeroAlpha)">Zero Alpha</button>
         <button id="fullAlpha" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), fullAlpha)">Full Alpha</button>
         <button id="encrypt" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), encrypt)">Encrypt</button>
+        <button id="encrypt_blocks" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), encrypt_blocks)">Encrypt Blocks</button>
         <button id="showDiffs" type="button" onclick="modifyImageData(document.getElementById('myCanvas'), showDiffs)">Calc Difference</button>
 
         <form>
@@ -53,13 +57,25 @@
             <label for="effectReverse">Reverse</label>
 
             <input id="effectShuffle" name="effect" type="radio">
-            <label for="effectShuffle">Shuffle</label>
+            <label for="effectShuffle">Shuffle Random</label>
 
             <input id="effectShuffle_stable" name="effect" type="radio" checked>
             <label for="effectShuffle_stable">Shuffle Stable</label>
 
+            <input id="effectShuffle_blocks" name="effect" type="radio">
+            <label for="effectShuffle_blocks">Shuffle Blocks</label>
+
+            <input id="effectInner_Shuffle_blocks" name="effect" type="radio">
+            <label for="effectInner_Shuffle_blocks">Inner Shuffle Blocks</label>
+
             <input id="effectSort" name="effect" type="radio">
             <label for="effectSort">Sort</label>
+
+            <input id="effectExtract" name="effect" type="radio">
+            <label for="effectExtract">Extract</label>
+
+            <!--<input id="effectIntract" name="effect" type="radio" checked>-->
+            <!--<label for="effectIntract">Intract</label>-->
 
             <input id="effectZeroAlpha" name="effect" type="radio">
             <label for="effectZeroAlpha">Zero Alpha</label>
@@ -70,38 +86,59 @@
             <input id="effectEncrypt" name="effect" type="radio">
             <label for="effectEncrypt">Encrypt</label>
 
+            <input id="effectEncrypt_blocks" name="effect" type="radio">
+            <label for="effectEncrypt_blocks">Encrypt Blocks</label>
+
             <input id="effectShowDiffs" name="effect" type="radio">
             <label for="effectShowDiffs">Calc Difference</label>
 
             <br>
             <label for="key">Key:</label>
-            <input id="key" type="text"/>
+            <input id="key" type="text" value="test"/>
+
+            <label for="blockSize">Block Size:</label>
+            <input id="blockSize" type="text" value="8"/>
+
+            <label for="iterations">Iterations:</label>
+            <input id="iterations" type="text" value="1"/>
             <br>
         </form>
         <br>
         <div style="position: relative;">
             <canvas id="myCanvas" style="position: relative; left: 0; top: 0; z-index: 0;"></canvas>
-            <canvas id="overlay" style="position: absolute; left: 0; top: 0; z-index: 1; pointer-events:none;"></canvas>
+            <canvas id="overlay" style="position: absolute; left: 0; top: 0; z-index: 1; pointer-events:none; border: 1px solid black;"></canvas>
         </div>
+        <canvas id="extractedCanvas" width="0" height="0"></canvas>
+        <!--Ok, this is probably questionable-->
+        <a id="download" onclick="downloadFunction()"><button>Download</button></a>
+        <button id="testConversion" onclick="testConversion()">Test Conversion</button>
+        <button id="calcError" onclick="calcError()">Calc Error</button>
         <br>
-        <table border="1">
-            <tr>
-                <th>Previous Selection</th>
-                <th>Current Selection</th>
-                <th>Selection Guess</th>
-                <th>Mouse Coords</th>
-            </tr>
-            <tr>
-                <td id="p1Prev">&nbsp;</td>
-                <td id="p1">&nbsp;</td>
-                <td id="p1Guess">&nbsp;</td>
-                <td id="mouseCoords">&nbsp;</td>
-            </tr>
-            <tr>
-                <td id="p2Prev">&nbsp;</td>
-                <td id="p2">&nbsp;</td>
-                <td id="p2Guess">&nbsp;</td>
-            </tr>
-        </table>
+        <form action="" method="post" onsubmit="manualInput();return false;">
+            <table border="1">
+                <tr>
+                    <th>Previous Selection</th>
+                    <th>Current Selection</th>
+                    <th>Selection Guess</th>
+                    <th>Mouse Coords</th>
+                    <th>Time Taken</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td id="p1Prev">&nbsp;</td>
+                    <td id="p1"><input id="p1Input" title="p1"></td>
+                    <td id="p1Guess">&nbsp;</td>
+                    <td id="mouseCoords">&nbsp;</td>
+                    <td id="timeTaken">&nbsp;</td>
+                    <td id="error">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td id="p2Prev">&nbsp;</td>
+                    <td id="p2"><input id="p2Input" title="p2"></td>
+                    <td id="p2Guess">&nbsp;</td>
+                </tr>
+            </table>
+            <input type="submit" style="visibility: hidden;" />
+        </form>
     </body>
 </html>
