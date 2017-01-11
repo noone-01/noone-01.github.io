@@ -207,6 +207,7 @@ function canvas_TouchStart(e)
 {
     // Only handle the first touch (?)
     if(e.touches[0] != e.changedTouches[0]) return;
+    e.preventDefault();
 
     setP1(this, getCursorPos(this, e.changedTouches[0]));
 }
@@ -267,6 +268,7 @@ function canvas_TouchMove(e)
 {
     // Only handle the first touch (?)
     if(e.touches[0] != e.changedTouches[0]) return;
+    e.preventDefault();
 
     dragTo(this, getCursorPos(this, e.changedTouches[0]));
 }
@@ -292,6 +294,7 @@ function canvas_TouchEnd(e)
 {
     // Only handle the first touch (?)
     if(e.touches.length > 0) return;
+    e.preventDefault();
 
     setP2(this, getCursorPos(this, e.changedTouches[0]));
 }
