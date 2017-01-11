@@ -116,7 +116,7 @@ window.onload = function ()
 
     canvas.addEventListener("touchstart", canvas_TouchStart);
     canvas.addEventListener("touchmove", canvas_TouchMove);
-    // canvas.addEventListener("touchcancel", canvas_TouchCancel);
+    canvas.addEventListener("touchcancel", canvas_TouchCancel);
     canvas.addEventListener("touchend", canvas_TouchEnd);
 
     canvas.style.cursor = "default";
@@ -205,9 +205,10 @@ function canvas_MouseDown(e)
  */
 function canvas_TouchStart(e)
 {
-    // Only handle the first touch (?)
-    if(e.touches[0] != e.changedTouches[0]) return;
     e.preventDefault();
+
+    // Only handle the first touch (?)
+    if(e.touches.length > 1) return;
 
     setP1(this, getCursorPos(this, e.changedTouches[0]));
 }
@@ -224,6 +225,34 @@ function setP1(canvas, point)
     document.getElementById('p1Input').value = canvas.p1.toString();
 }
 
+/**
+ *
+ * @param {MouseEvent} e
+ */
+function canvas_MouseMove(e)
+{
+    dragTo(this, getCursorPos(this, e));
+}
+
+/**
+ *
+ * @param {TouchEvent} e
+ */
+function canvas_TouchMove(e)
+{
+    e.preventDefault();
+
+    // Only handle the first touch (?)
+    if(e.touches[0] != e.changedTouches[0]) return;
+
+    dragTo(this, getCursorPos(this, e.changedTouches[0]));
+}
+
+/**
+ *
+ * @param canvas
+ * @param {Point} point
+ */
 function dragTo(canvas, point)
 {
     document.getElementById('mouseCoords').textContent = point.toString();
@@ -251,26 +280,14 @@ function dragTo(canvas, point)
     }
     brush.draw(ctx);
 }
-/**
- *
- * @param {MouseEvent} e
- */
-function canvas_MouseMove(e)
-{
-    dragTo(this, getCursorPos(this, e));
-}
 
 /**
  *
  * @param {TouchEvent} e
  */
-function canvas_TouchMove(e)
+function canvas_TouchCancel(e)
 {
-    // Only handle the first touch (?)
-    if(e.touches[0] != e.changedTouches[0]) return;
     e.preventDefault();
-
-    dragTo(this, getCursorPos(this, e.changedTouches[0]));
 }
 
 /**
@@ -292,9 +309,10 @@ function canvas_MouseUp(e)
  */
 function canvas_TouchEnd(e)
 {
+    e.preventDefault();
+
     // Only handle the first touch (?)
     if(e.touches.length > 0) return;
-    e.preventDefault();
 
     setP2(this, getCursorPos(this, e.changedTouches[0]));
 }
