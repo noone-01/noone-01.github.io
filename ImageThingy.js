@@ -9,9 +9,48 @@
 // Test Images:
 // http://sipi.usc.edu/database/
 
+// /**
+//  * Added this because WebStorm thinks that ImageData.data is a CanvasPixelArray when it's really a Uint8ClampedArray
+//  * @typedef {CanvasPixelArray} Uint8ClampedArray
+//  */
+
 /**
  * Added this because WebStorm thinks that ImageData.data is a CanvasPixelArray when it's really a Uint8ClampedArray
- * @typedef {CanvasPixelArray} Uint8ClampedArray
+ * @typedef {Uint8ClampedArray} CanvasPixelArray
+ */
+
+/**
+ * @typedef {UIEvent} TouchEvent
+ * @property {Boolean} altKey - A Boolean value indicating whether or not the alt key was down when the touch event was fired.
+ * @property {TouchList} changedTouches - A TouchList of all the Touch objects representing individual points of contact whose states changed between the previous touch event and this one.
+ * @property {Boolean} ctrlKey - A Boolean value indicating whether or not the control key was down when the touch event was fired.
+ * @property {Boolean} metaKey - A Boolean value indicating whether or not the meta key was down when the touch event was fired.
+ * @property {Boolean} shiftKey - A Boolean value indicating whether or not the shift key was down when the touch event was fired.
+ * @property {TouchList} targetTouches - A TouchList of all the Touch objects that are both currently in contact with the touch surface and were also started on the same element that is the target of the event.
+ * @property {TouchList} touches - A TouchList of all the Touch objects representing all current points of contact with the surface, regardless of target or changed status.
+ */
+
+/**
+ * @typedef {Touch[]} TouchList
+ * @method {Touch} identifiedTouch
+ * @method {Touch} item
+ */
+
+/**
+ * @typedef {Object} Touch
+ * @property {number} identifier - Returns a unique identifier for this Touch object. A given touch point (say, by a finger) will have the same identifier for the duration of its movement around the surface. This lets you ensure that you're tracking the same touch all the time.
+ * @property {number} screenX - Returns the X coordinate of the touch point relative to the left edge of the screen.
+ * @property {number} screenY - Returns the Y coordinate of the touch point relative to the top edge of the screen.
+ * @property {number} clientX - Returns the X coordinate of the touch point relative to the left edge of the browser viewport, not including any scroll offset.
+ * @property {number} clientY - Returns the Y coordinate of the touch point relative to the top edge of the browser viewport, not including any scroll offset.
+ * @property {number} pageX - Returns the X coordinate of the touch point relative to the left edge of the document. Unlike clientX, this value includes the horizontal scroll offset, if any.
+ * @property {number} pageY - Returns the Y coordinate of the touch point relative to the top of the document. Unlike clientY, this value includes the vertical scroll offset, if any.
+ * @property {Element} target - Returns the Element on which the touch point started when it was first placed on the surface, even if the touch point has since moved outside the interactive area of that element or even been removed from the document.
+
+ * @property {number} radiusX - Returns the X radius of the ellipse that most closely circumscribes the area of contact with the screen. The value is in pixels of the same scale as screenX.
+ * @property {number} radiusY - Returns the Y radius of the ellipse that most closely circumscribes the area of contact with the screen. The value is in pixels of the same scale as screenY.
+ * @property {number} rotationAngle - Returns the angle (in degrees) that the ellipse described by radiusX and radiusY must be rotated, clockwise, to most accurately cover the area of contact between the user and the surface.
+ * @property {number} force - Returns the amount of pressure being applied to the surface by the user, as a float between 0.0 (no pressure) and 1.0 (maximum pressure).
  */
 
 // TODO: Turns out that JPEG encoding works on block sizes of 8 and loses lots of color info when pixels are finely shuffled
@@ -167,9 +206,9 @@ function canvas_MouseDown(e)
 function canvas_TouchStart(e)
 {
     // Only handle the first touch (?)
-    if(e.touches[0] != e.changedtouches[0]) return;
+    if(e.touches[0] != e.changedTouches[0]) return;
 
-    setP1(this, getCursorPos(this, e.changedtouches[0]));
+    setP1(this, getCursorPos(this, e.changedTouches[0]));
 }
 
 /**
@@ -227,9 +266,9 @@ function canvas_MouseMove(e)
 function canvas_TouchMove(e)
 {
     // Only handle the first touch (?)
-    if(e.touches[0] != e.changedtouches[0]) return;
+    if(e.touches[0] != e.changedTouches[0]) return;
 
-    dragTo(this, getCursorPos(this, e.changedtouches[0]));
+    dragTo(this, getCursorPos(this, e.changedTouches[0]));
 }
 
 /**
@@ -252,9 +291,9 @@ function canvas_MouseUp(e)
 function canvas_TouchEnd(e)
 {
     // Only handle the first touch (?)
-    if(e.touches[0] != e.changedtouches[0]) return;
+    if(e.touches.length > 0) return;
 
-    setP2(this, getCursorPos(this, e.changedtouches[0]));
+    setP2(this, getCursorPos(this, e.changedTouches[0]));
 }
 
 /**
