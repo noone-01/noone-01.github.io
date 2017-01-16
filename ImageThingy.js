@@ -157,6 +157,9 @@ function getFilename(url)
     return url.split('/').pop().split('#')[0].split('?')[0];
 }
 
+/**
+ * Converts the canvas to a jpeg and writes the result back to the canvas. (for testing jpeg quality loss)
+ */
 function testConversion()
 {
     // Perform jpg conversion and write the result back to the canvas
@@ -166,6 +169,9 @@ function testConversion()
     img.src = canvas.toDataURL("image/jpeg", 1.0);
 }
 
+/**
+ * Clears changes made to the image and reloads the original
+ */
 function reset()
 {
     // Load the original image
@@ -243,7 +249,7 @@ function canvas_TouchMove(e)
     e.preventDefault();
 
     // Only handle the first touch (?)
-    if(e.touches[0] != e.changedTouches[0]) return;
+    if(e.touches[0].identifier != e.changedTouches[0].identifier) return;
 
     dragTo(this, getCursorPos(this, e.changedTouches[0]));
 }
@@ -1122,7 +1128,7 @@ function showDiffs(imageData, brush)
 {
     let data = imageData.data;
     let width = imageData.width;
-    let originalData = new Uint8ClampedArray(data);
+    let originalData = new Uint8ClampedArray(data, 0, data.length);
 
     for (let i = 0; i < data.length; i += 4)
     {
